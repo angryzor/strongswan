@@ -20,6 +20,7 @@
 #include <crypto/crypters/crypter.h>
 #include <crypto/signers/signer.h>
 #include <crypto/diffie_hellman.h>
+#include <crypto/qske_mechanism.h>
 
 %}
 struct proposal_token {
@@ -173,3 +174,6 @@ ntru256,          DIFFIE_HELLMAN_GROUP, NTRU_256_BIT,              0
 newhope128,       DIFFIE_HELLMAN_GROUP, NH_128_BIT,                0
 noesn,            EXTENDED_SEQUENCE_NUMBERS, NO_EXT_SEQ_NUMBERS,   0
 esn,              EXTENDED_SEQUENCE_NUMBERS, EXT_SEQ_NUMBERS,      0
+qskenewhope,      QSKE_MECHANISM, QSKE_NEWHOPE,                    0
+qskekyber,        QSKE_MECHANISM, QSKE_CRYSTALS_KYBER,             0
+qskefrodo,        QSKE_MECHANISM, QSKE_FRODO,                      0

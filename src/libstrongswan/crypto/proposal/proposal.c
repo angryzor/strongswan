@@ -984,6 +984,7 @@ static bool proposal_add_supported_ike(private_proposal_t *this, bool aead)
 	integrity_algorithm_t integrity;
 	pseudo_random_function_t prf;
 	diffie_hellman_group_t group;
+	qske_mechanism_t mechanism;
 	const char *plugin_name;
 
 	if (aead)
@@ -1230,6 +1231,23 @@ static bool proposal_add_supported_ike(private_proposal_t *this, bool aead)
 				break;
 			case MODP_2048_BIT:
 				add_algorithm(this, DIFFIE_HELLMAN_GROUP, group, 0);
+				break;
+			default:
+				break;
+		}
+	}
+	enumerator->destroy(enumerator);
+
+	/* Round 1 adds QSKE mechanisms with at least 128 bit security strength */
+	enumerator = lib->crypto->create_qske_enumerator(lib->crypto);
+	while (enumerator->enumerate(enumerator, &mechanism, &plugin_name))
+	{
+		switch (mechanism)
+		{
+			case QSKE_NEWHOPE:
+			case QSKE_CRYSTALS_KYBER:
+			case QSKE_FRODO:
+				add_algorithm(this, QSKE_MECHANISM, mechanism, 0);
 				break;
 			default:
 				break;
