@@ -801,9 +801,9 @@ dhcp_socket_t *dhcp_socket_create()
 		return NULL;
 	}
 	if (!is_broadcast(this->dst) &&
-		!lib->settings->get_bool(lib->settings,
-								 "%s.plugins.dhcp.force_client_port", FALSE,
-								 lib->ns))
+		lib->settings->get_bool(lib->settings,
+								"%s.plugins.dhcp.use_server_port", FALSE,
+								lib->ns))
 	{
 		/* when setting giaddr (which we do when we don't broadcast), the server
 		 * should respond to the server port on that IP, according to RFC 2131,
@@ -812,8 +812,8 @@ dhcp_socket_t *dhcp_socket_create()
 		 * socket bound to that port, which might be problematic with certain
 		 * DHCP servers.  instead of opening an additional socket, that we don't
 		 * actually use, we can also just send our requests from port 67.
-		 * unless we are configured to not do this, which might be necessary to
-		 * avoid conflicts with DHCP servers running on the same host */
+		 * we don't do this by default, as it might cause conflicts with DHCP
+		 * servers running on the same host */
 		src.sin_port = htons(DHCP_SERVER_PORT);
 	}
 	if (bind(this->send, (struct sockaddr*)&src, sizeof(src)) == -1)
