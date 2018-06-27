@@ -1245,8 +1245,38 @@ static bool proposal_add_supported_ike(private_proposal_t *this, bool aead)
 		switch (mechanism)
 		{
 			case QSKE_NEWHOPE:
-			case QSKE_CRYSTALS_KYBER:
-			case QSKE_FRODO:
+			case QSKE_NEWHOPE_L1:
+			case QSKE_NEWHOPE_L5:
+			case QSKE_FRODO_AES_L1:
+			case QSKE_FRODO_AES_L3:
+			case QSKE_FRODO_SHAKE_L1:
+			case QSKE_FRODO_SHAKE_L3:
+			case QSKE_KYBER_L1:
+			case QSKE_KYBER_L3:
+			case QSKE_KYBER_L5:
+			case QSKE_BIKE1_L1:
+			case QSKE_BIKE1_L3:
+			case QSKE_BIKE1_L5:
+			case QSKE_BIKE2_L1:
+			case QSKE_BIKE2_L3:
+			case QSKE_BIKE2_L5:
+			case QSKE_BIKE3_L1:
+			case QSKE_BIKE3_L3:
+			case QSKE_BIKE3_L5:
+			case QSKE_SIKE_L1:
+			case QSKE_SIKE_L3:
+			case QSKE_BIG_QUAKE_L1:
+			case QKSE_BIG_QUAKE_L3:
+			case QKSE_BIG_QUAKE_L5:
+			case QSKE_SABER_L1:
+			case QSKE_SABER_L3:
+			case QSKE_SABER_L5:
+			case QSKE_LIMA_2P_L3:
+			case QSKE_LIMA_2P_L5:
+			case QSKE_LIMA_SP_L1:
+			case QSKE_LIMA_SP_L2:
+			case QSKE_LIMA_SP_L3:
+			case QSKE_LIMA_SP_L5:
 				add_algorithm(this, QSKE_MECHANISM, mechanism, 0);
 				break;
 			default:
