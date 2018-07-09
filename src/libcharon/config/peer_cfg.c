@@ -141,6 +141,11 @@ struct private_peer_cfg_t {
 	linked_list_t *vips;
 
 	/**
+	 * List of additional static virtual IPs to register.
+	 */
+	linked_list_t *static_vips;
+
+	/**
 	 * List of pool names to use for virtual IP lookup
 	 */
 	linked_list_t *pools;
@@ -546,6 +551,18 @@ METHOD(peer_cfg_t, create_virtual_ip_enumerator, enumerator_t*,
 	return this->vips->create_enumerator(this->vips);
 }
 
+METHOD(peer_cfg_t, add_static_virtual_ip, void,
+	private_peer_cfg_t *this, host_t *vip)
+{
+	this->static_vips->insert_last(this->static_vips, vip);
+}
+
+METHOD(peer_cfg_t, create_static_virtual_ip_enumerator, enumerator_t*,
+	private_peer_cfg_t *this)
+{
+	return this->static_vips->create_enumerator(this->static_vips);
+}
+
 METHOD(peer_cfg_t, add_pool, void,
 	private_peer_cfg_t *this, char *name)
 {
@@ -671,6 +688,11 @@ METHOD(peer_cfg_t, equals, bool,
 	{
 		return FALSE;
 	}
+	if (!this->static_vips->equals_offset(this->static_vips, other->static_vips,
+								   offsetof(host_t, ip_equals)))
+	{
+		return FALSE;
+	}
 	if (!this->pools->equals_function(this->pools, other->pools, (void*)streq))
 	{
 		return FALSE;
@@ -719,6 +741,7 @@ METHOD(peer_cfg_t, destroy, void,
 		this->remote_auth->destroy_offset(this->remote_auth,
 										offsetof(auth_cfg_t, destroy));
 		this->vips->destroy_offset(this->vips, offsetof(host_t, destroy));
+		this->static_vips->destroy_offset(this->static_vips, offsetof(host_t, destroy));
 		this->pools->destroy_function(this->pools, free);
 #ifdef ME
 		DESTROY_IF(this->peer_id);
@@ -774,6 +797,8 @@ peer_cfg_t *peer_cfg_create(char *name, ike_cfg_t *ike_cfg,
 			.get_dpd_timeout = _get_dpd_timeout,
 			.add_virtual_ip = _add_virtual_ip,
 			.create_virtual_ip_enumerator = _create_virtual_ip_enumerator,
+			.add_static_virtual_ip = _add_static_virtual_ip,
+			.create_static_virtual_ip_enumerator = _create_static_virtual_ip_enumerator,
 			.add_pool = _add_pool,
 			.create_pool_enumerator = _create_pool_enumerator,
 			.add_auth_cfg = _add_auth_cfg,
@@ -804,6 +829,7 @@ peer_cfg_t *peer_cfg_create(char *name, ike_cfg_t *ike_cfg,
 		.dpd = data->dpd,
 		.dpd_timeout = data->dpd_timeout,
 		.vips = linked_list_create(),
+		.static_vips = linked_list_create(),
 		.pools = linked_list_create(),
 		.local_auth = linked_list_create(),
 		.remote_auth = linked_list_create(),

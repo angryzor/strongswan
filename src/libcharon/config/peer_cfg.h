@@ -300,6 +300,22 @@ struct peer_cfg_t {
 	enumerator_t* (*create_virtual_ip_enumerator)(peer_cfg_t *this);
 
 	/**
+	 * Add a virtual IP to register without requesting.
+	 *
+	 * @param vip			virtual IP to request, may be %any or %any6
+	 */
+	void (*add_static_virtual_ip)(peer_cfg_t *this, host_t *vip);
+
+	/**
+	 * Create an enumerator over virtual IPs to register without requesting.
+	 *
+	 * The returned enumerator enumerates over IPs added with add_static_virtual_ip().
+	 *
+	 * @return				enumerator over host_t*
+	 */
+	enumerator_t* (*create_static_virtual_ip_enumerator)(peer_cfg_t *this);
+
+	/**
 	 * Add a pool name this configuration uses to select virtual IPs.
 	 *
 	 * @param name			pool name to use for virtual IP lookup

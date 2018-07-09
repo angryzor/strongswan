@@ -434,12 +434,24 @@ METHOD(task_t, process_i, status_t,
 	{	/* in last IKE_AUTH exchange */
 		enumerator_t *enumerator;
 		host_t *host;
+		peer_cfg_t *config;
 
 		process_payloads(this, message);
 
 		this->ike_sa->clear_virtual_ips(this->ike_sa, TRUE);
 
 		enumerator = this->vips->create_enumerator(this->vips);
+		while (enumerator->enumerate(enumerator, &host))
+		{
+			if (!host->is_anyaddr(host))
+			{
+				this->ike_sa->add_virtual_ip(this->ike_sa, TRUE, host);
+			}
+		}
+		enumerator->destroy(enumerator);
+
+		config = this->ike_sa->get_peer_cfg(this->ike_sa);
+		enumerator = config->create_static_virtual_ip_enumerator(config);
 		while (enumerator->enumerate(enumerator, &host))
 		{
 			if (!host->is_anyaddr(host))

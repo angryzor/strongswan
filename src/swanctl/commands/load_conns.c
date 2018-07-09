@@ -36,6 +36,7 @@ static bool is_list_key(char *key)
 		"local_ts",
 		"remote_ts",
 		"vips",
+		"static_vips",
 		"pools",
 		"groups",
 		"cert_policy",
